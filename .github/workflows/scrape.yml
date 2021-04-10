@@ -22,10 +22,11 @@ jobs:
       run: |-
         git config user.name "Automated"
         git config user.email "actions@users.noreply.github.com"
+        git pull 
         git add -A
         timestamp=$(date -u)
         git commit -m "Latest data: ${timestamp}" || exit 0
-        git -f push
+        git push
     - name: Set up gcloud Cloud SDK environment
       if: steps.commitChange.conclusion == 'success'
       uses: google-github-actions/setup-gcloud@master
