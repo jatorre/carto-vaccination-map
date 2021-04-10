@@ -37,6 +37,6 @@ jobs:
     - name: Remove existing table in BigQuery
       if: steps.commitChange.conclusion == 'success'
       run: bq rm -f -t maps.cdc_raw_counties_data
-    -name: Upload new table to BigQuery
+    - name: Upload new table to BigQuery
       if: steps.commitChange.conclusion == 'success'
       run: bq load --autodetect --source_format=NEWLINE_DELIMITED_JSON maps.cdc_raw_counties_data counties.json      
