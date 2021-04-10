@@ -25,7 +25,7 @@ jobs:
         git pull 
         git add -A
         timestamp=$(date -u)
-        git commit -m "Latest data: ${timestamp}" || exit 0
+        git commit -m "Latest data: ${timestamp}" || exit 1
         git push
     - name: Set up gcloud Cloud SDK environment
       if: steps.commitChange.conclusion == 'success'
