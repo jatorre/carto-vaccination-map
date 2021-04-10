@@ -39,4 +39,7 @@ jobs:
       run: bq rm -f -t maps.cdc_raw_counties_data
     - name: Upload new table to BigQuery
       if: steps.commitChange.conclusion == 'success'
-      run: bq load --autodetect --source_format=NEWLINE_DELIMITED_JSON maps.cdc_raw_counties_data counties.json      
+      run: bq load --autodetect --source_format=NEWLINE_DELIMITED_JSON maps.cdc_raw_counties_data counties.json
+    - name: Set description info on Bigquery
+      if: steps.commitChange.conclusion == 'success'
+      run: bq update --description "Latest data ${timestamp} | From https://covid.cdc.gov/covid-data-tracker/COVIDData/getAjaxData?id=vaccination_county_condensed_data" maps.cdc_raw_counties_data
