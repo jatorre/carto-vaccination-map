@@ -16,9 +16,9 @@ jobs:
         fetch-depth: 0
     - name: Fetch latest data
       run: |-
-        curl https://covid.cdc.gov/covid-data-tracker/COVIDData/getAjaxData?id=vaccination_data | jq . > states.json
-        curl https://covid.cdc.gov/covid-data-tracker/COVIDData/getAjaxData?id=vaccination_county_condensed_data | jq . > counties.json
-    - name: Commit and push if it changed
+        curl https://covid.cdc.gov/covid-data-tracker/COVIDData/getAjaxData?id=vaccination_county_condensed_data | jq -c '.vaccination_county_condensed_data[]' > counties.json
+    - id: commitChange
+      name: Commit and push if it changed
       run: |-
         git config user.name "Automated"
         git config user.email "actions@users.noreply.github.com"
@@ -27,10 +27,12 @@ jobs:
         git commit -m "Latest data: ${timestamp}" || exit 0
         git push
     - name: Set up gcloud Cloud SDK environment
+      if: steps.commitChange.conclusion == 'success'
       uses: google-github-actions/setup-gcloud@master
       with:
         project_id: ${{ secrets.GCP_PROJECT_ID }}
         service_account_key: ${{ secrets.GCP_SA_KEY }}
         export_default_credentials: true
     - name: Use gcloud CLI
+      if: steps.commitChange.conclusion == 'success'
       run: gcloud info
