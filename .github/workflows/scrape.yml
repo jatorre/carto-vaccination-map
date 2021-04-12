@@ -9,6 +9,8 @@ on:
 jobs:
   scheduled:
     runs-on: ubuntu-latest
+    env:
+      TILESET_TABLE: cartobq.maps.covid19_vaccinated_usa_tileset
     steps:
     - name: Check out this repo
       uses: actions/checkout@v2
@@ -43,3 +45,11 @@ jobs:
     - name: Set description info on Bigquery
       if: steps.commitChange.conclusion == 'success'
       run: bq update --description "Latest data ${timestamp} | From https://covid.cdc.gov/covid-data-tracker/COVIDData/getAjaxData?id=vaccination_county_condensed_data" maps.cdc_raw_counties_data
+    - name: Execute actual queries
+      if: steps.commitChange.conclusion == 'success'
+      run: bq query --use_legacy_sql=false < queries.sql
+    - name: Finish the actions
+      if: steps.commitChange.conclusion == 'success'
+      run: |-
+        bq cp --force cartobq.maps.covid19_vaccinated_usa_tileset_temp ${{ env.TILESET_TABLE }}
+        bq rm --force --table cartobq.maps.covid19_vaccinated_usa_tileset_temp
