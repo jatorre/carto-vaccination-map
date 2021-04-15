@@ -1,5 +1,5 @@
 -- Create the display tileset in a temporary table to avoid read/write collisions
-DROP TABLE IF EXISTS `cartobq.maps.covid19_vaccinated_usa_tileset_temp`;
+DROP TABLE IF EXISTS `cartobq.maps.covid19_vaccinated_usa_tileset_temp1`;
 -- vaccinated property domain: ['true', 'false', 'unknown']
 CALL bqcarto.tiler.CREATE_SIMPLE_TILESET(
 R'''(
@@ -32,7 +32,7 @@ R'''(
     FROM `cartobq.maps.covid19_vaccinated_usa_blockgroups_100pct`
     
 ) _a''',
-R'''`cartobq.maps.covid19_vaccinated_usa_tileset_temp`''',
+R'''`cartobq.maps.covid19_vaccinated_usa_tileset_temp1`''',
 '''
     {
     "zoom_min": 0,
@@ -53,5 +53,5 @@ R'''`cartobq.maps.covid19_vaccinated_usa_tileset_temp`''',
 
 -- Allocate the tileset in its final table
 CREATE OR REPLACE TABLE `cartobq.maps.covid19_vaccinated_usa_tileset` AS 
-SELECT * FROM `cartobq.maps.covid19_vaccinated_usa_tileset_temp`;
-DROP TABLE IF EXISTS `cartobq.maps.covid19_vaccinated_usa_tileset_temp`;
+SELECT * FROM `cartobq.maps.covid19_vaccinated_usa_tileset_temp1`;
+DROP TABLE IF EXISTS `cartobq.maps.covid19_vaccinated_usa_tileset_temp1`;
