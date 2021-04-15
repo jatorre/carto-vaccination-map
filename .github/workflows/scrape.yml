@@ -45,7 +45,7 @@ jobs:
       if: steps.commitChange.conclusion == 'success'
       run: bq update --description "Latest data ${timestamp} | From https://covid.cdc.gov/covid-data-tracker/COVIDData/getAjaxData?id=vaccination_county_condensed_data" maps.cdc_raw_counties_data
     - name: Execute the update of the points table
-      if: steps.commitChange.conclusion == 'success'
+      #if: steps.commitChange.conclusion == 'success'
       run: bq query --use_legacy_sql=false < raw_points_query.sql
     #- name: Execute the tiler for the visualization points
     #  if: steps.commitChange.conclusion == 'success'
