@@ -44,7 +44,9 @@ jobs:
     - name: Set description info on Bigquery
       if: steps.commitChange.conclusion == 'success'
       run: bq update --description "Latest data ${timestamp} | From https://covid.cdc.gov/covid-data-tracker/COVIDData/getAjaxData?id=vaccination_county_condensed_data" maps.cdc_raw_counties_data
-      # In order to avoid problems with the service account, the sql queries which use CARTO functionalities are delegated to BigQuery scheduling queries
-      #- name: Execute actual queries
-      #if: steps.commitChange.conclusion == 'success'
-      #run: bq query --use_legacy_sql=false < queries.sql
+    - name: Execute the update of the points table
+      if: steps.commitChange.conclusion == 'success'
+      run: bq query --use_legacy_sql=false < raw_points_query.sql
+    #- name: Execute the tiler for the visualization points
+    #  if: steps.commitChange.conclusion == 'success'
+    #  run: bq query --use_legacy_sql=false < visualization_points_tileset_query.sql
