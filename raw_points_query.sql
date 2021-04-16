@@ -1,3 +1,5 @@
+
+-- Data per counties
 CREATE OR REPLACE TABLE `cartobq.maps.covid19_vaccinated_usa_blockgroups_100pct` AS
 
     -- Extract the blockgroup geometry with its population
@@ -51,3 +53,14 @@ CREATE OR REPLACE TABLE `cartobq.maps.covid19_vaccinated_usa_blockgroups_100pct`
     SELECT *
     FROM `cartobq.maps.covid19_vaccinated_usa_blockgroups_100pct`
     WHERE RAND() < 0.01;
+
+
+-- Data per states
+DROP TABLE IF EXISTS `cartobq.maps.data_by_state`;
+CREATE OR REPLACE TABLE `cartobq.maps.data_by_state` AS
+WITH data AS (
+SELECT state, state_geom as geom,Series_Complete_Yes as fully_vacc,Census2019 as pop  FROM `bigquery-public-data.geo_us_boundaries.states` as g
+inner join `cartobq.maps.cdc_raw_states_data` as d ON g.state=d.Location
+),
+rnd_points AS (SELECT state,bqcarto.random.ST_GENERATEPOINTS(geom, 20) AS points,pop,fully_vacc FROM data)
+SELECT state,point as geom,pop/20 as pop,fully_vacc/20 as fully_vacc FROM rnd_points,UNNEST(rnd_points.points) as point

@@ -44,7 +44,7 @@ R'''(
     pop - fully_vacc AS non_vacc,
     0 AS unknown,
     geom
-    FROM `cartobq.maps.data_by_county`
+    FROM `cartobq.maps.data_by_state`
 
     UNION ALL
 

@@ -16,7 +16,7 @@ jobs:
         fetch-depth: 0
     - name: Fetch latest data
       run: |-
-        curl https://covid.cdc.gov/covid-data-tracker/COVIDData/getAjaxData?id=vaccination_data | jq . > states.json
+        curl https://covid.cdc.gov/covid-data-tracker/COVIDData/getAjaxData?id=vaccination_data | jq -c '.vaccination_data[]' > states.json
         curl https://covid.cdc.gov/covid-data-tracker/COVIDData/getAjaxData?id=vaccination_county_condensed_data | jq -c '.vaccination_county_condensed_data[]' > counties.json
     - id: commitChange
       name: Commit and push if it changed
@@ -38,9 +38,12 @@ jobs:
     - name: Remove existing table in BigQuery
       if: steps.commitChange.conclusion == 'success'
       run: bq rm -f -t maps.cdc_raw_counties_data
-    - name: Upload new table to BigQuery
+    - name: Upload new table of counties to BigQuery
       if: steps.commitChange.conclusion == 'success'
       run: bq load --autodetect --source_format=NEWLINE_DELIMITED_JSON maps.cdc_raw_counties_data counties.json
+    - name: Upload new table of states to BigQuery
+      if: steps.commitChange.conclusion == 'success'
+      run: bq load --autodetect --source_format=NEWLINE_DELIMITED_JSON maps.cdc_raw_states_data states.json
     - name: Set description info on Bigquery
       if: steps.commitChange.conclusion == 'success'
       run: bq update --description "Latest data ${timestamp} | From https://covid.cdc.gov/covid-data-tracker/COVIDData/getAjaxData?id=vaccination_county_condensed_data" maps.cdc_raw_counties_data
