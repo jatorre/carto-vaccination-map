@@ -58,3 +58,11 @@ jobs:
     - name: Execute the tiler for the stats points
       if: steps.commitChange.conclusion == 'success'
       run: bq query --use_legacy_sql=false < stats_points_tileset_query.sql
+    - name: Delete final destination tables
+      run: |-
+        bq rm -t maps.covid19_vaccinated_usa_tileset
+        bq rm -t maps.covid19_vaccinated_stats_usa_tileset
+    - name: Copy the tilesets in their final destinations
+      run: |-
+        bq cp maps.covid19_vaccinated_usa_tileset_temp maps.covid19_vaccinated_usa_tileset
+        bq cp maps.covid19_vaccinated_stats_usa_tileset_temp maps.covid19_vaccinated_stats_usa_tileset
