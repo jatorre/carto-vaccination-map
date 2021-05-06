@@ -52,7 +52,7 @@ R'''`cartobq.maps.covid19_vaccinated_usa_tileset_temp`''',
 );
 
 -- Allocate the tileset in its final table
-DROP TABLE IF EXISTS `cartobq.maps.covid19_vaccinated_usa_tileset`;
-CREATE OR REPLACE TABLE `cartobq.maps.covid19_vaccinated_usa_tileset` AS 
-SELECT * FROM `cartobq.maps.covid19_vaccinated_usa_tileset_temp`;
-DROP TABLE IF EXISTS `cartobq.maps.covid19_vaccinated_usa_tileset_temp`;
+--DROP TABLE IF EXISTS `cartobq.maps.covid19_vaccinated_usa_tileset`;
+--CREATE OR REPLACE TABLE `cartobq.maps.covid19_vaccinated_usa_tileset` AS 
+--SELECT * FROM `cartobq.maps.covid19_vaccinated_usa_tileset_temp`;
+--DROP TABLE IF EXISTS `cartobq.maps.covid19_vaccinated_usa_tileset_temp`;
